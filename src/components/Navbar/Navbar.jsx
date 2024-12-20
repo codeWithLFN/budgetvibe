@@ -1,126 +1,130 @@
+import { Link } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth'; // You'll need to create this hook
+import { FiMenu, FiX, FiUser, FiLogOut, FiHome, FiPieChart } from 'react-icons/fi';
 
-export default function Navbar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+const Navbar = () => {
   const { user, logout } = useAuth();
-  const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
 
-  const handleLogout = async () => {
-    await logout();
-    navigate('/login');
-  };
+  const navLinks = user ? [
+    { name: 'Dashboard', path: '/dashboard', icon: <FiPieChart /> },
+    { name: 'Profile', path: '/profile', icon: <FiUser /> }
+  ] : [
+    { name: 'Home', path: '/', icon: <FiHome /> }
+  ];
 
   return (
-    <nav className="bg-indigo-600">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo and Brand */}
-          <div className="flex-shrink-0">
-            <Link to="/" className="flex items-center">
-              <span className="text-white text-xl font-bold">BudgetVibe</span>
-            </Link>
-          </div>
+    <nav className="bg-gray-900/90 backdrop-blur-md fixed w-full z-50">
+      <div className="container mx-auto px-4">
+        <div className="flex justify-between items-center h-20">
+          {/* Logo */}
+          <Link 
+            to="/" 
+            className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-600 bg-clip-text text-transparent hover:opacity-80 transition-opacity"
+          >
+            BudgetVibe
+          </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-4">
-              <Link to="/" className="text-white hover:bg-indigo-500 px-3 py-2 rounded-md">
-                Home
+          <div className="hidden md:flex items-center space-x-8">
+            {navLinks.map((link) => (
+              <Link
+                key={link.path}
+                to={link.path}
+                className="flex items-center text-gray-300 hover:text-white transition-colors duration-200"
+              >
+                <span className="mr-2">{link.icon}</span>
+                {link.name}
               </Link>
+            ))}
+
+            {user ? (
+              <button
+                onClick={logout}
+                className="flex items-center px-4 py-2 rounded-full bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors duration-200"
+              >
+                <FiLogOut className="mr-2" />
+                Logout
+              </button>
+            ) : (
+              <div className="flex items-center space-x-4">
+                <Link
+                  to="/login"
+                  className="text-gray-300 hover:text-white transition-colors duration-200"
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/signup"
+                  className="px-6 py-2 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:shadow-lg hover:shadow-purple-500/30 transition-all duration-300"
+                >
+                  Sign Up
+                </Link>
+              </div>
+            )}
+          </div>
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="md:hidden text-gray-300 hover:text-white"
+          >
+            {isOpen ? <FiX size={24} /> : <FiMenu size={24} />}
+          </button>
+        </div>
+
+        {/* Mobile Navigation */}
+        {isOpen && (
+          <div className="md:hidden py-4">
+            <div className="flex flex-col space-y-4">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className="flex items-center text-gray-300 hover:text-white transition-colors duration-200"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <span className="mr-2">{link.icon}</span>
+                  {link.name}
+                </Link>
+              ))}
+
               {user ? (
-                <>
-                  <Link to="/dashboard" className="text-white hover:bg-indigo-500 px-3 py-2 rounded-md">
-                    Dashboard
-                  </Link>
-                  <Link to="/expenses" className="text-white hover:bg-indigo-500 px-3 py-2 rounded-md">
-                    Expenses
-                  </Link>
-                  <Link to="/budget" className="text-white hover:bg-indigo-500 px-3 py-2 rounded-md">
-                    Budget
-                  </Link>
-                  <button
-                    onClick={handleLogout}
-                    className="text-white hover:bg-indigo-500 px-3 py-2 rounded-md"
-                  >
-                    Logout
-                  </button>
-                </>
+                <button
+                  onClick={() => {
+                    logout();
+                    setIsOpen(false);
+                  }}
+                  className="flex items-center px-4 py-2 rounded-full bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors duration-200"
+                >
+                  <FiLogOut className="mr-2" />
+                  Logout
+                </button>
               ) : (
-                <>
-                  <Link to="/login" className="text-white hover:bg-indigo-500 px-3 py-2 rounded-md">
+                <div className="flex flex-col space-y-4">
+                  <Link
+                    to="/login"
+                    className="text-gray-300 hover:text-white transition-colors duration-200"
+                    onClick={() => setIsOpen(false)}
+                  >
                     Login
                   </Link>
-                  <Link to="/signup" className="text-white hover:bg-indigo-500 px-3 py-2 rounded-md">
+                  <Link
+                    to="/signup"
+                    className="px-6 py-2 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:shadow-lg hover:shadow-purple-500/30 transition-all duration-300 text-center"
+                    onClick={() => setIsOpen(false)}
+                  >
                     Sign Up
                   </Link>
-                </>
+                </div>
               )}
             </div>
           </div>
-
-          {/* Mobile menu button */}
-          <div className="md:hidden">
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-indigo-500"
-            >
-              <svg
-                className="h-6 w-6"
-                stroke="currentColor"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                {isMenuOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-                )}
-              </svg>
-            </button>
-          </div>
-        </div>
+        )}
       </div>
-
-      {/* Mobile Navigation */}
-      {isMenuOpen && (
-        <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <Link to="/" className="text-white block hover:bg-indigo-500 px-3 py-2 rounded-md">
-              Home
-            </Link>
-            {user ? (
-              <>
-                <Link to="/dashboard" className="text-white block hover:bg-indigo-500 px-3 py-2 rounded-md">
-                  Dashboard
-                </Link>
-                <Link to="/expenses" className="text-white block hover:bg-indigo-500 px-3 py-2 rounded-md">
-                  Expenses
-                </Link>
-                <Link to="/budget" className="text-white block hover:bg-indigo-500 px-3 py-2 rounded-md">
-                  Budget
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="text-white block hover:bg-indigo-500 px-3 py-2 rounded-md w-full text-left"
-                >
-                  Logout
-                </button>
-              </>
-            ) : (
-              <>
-                <Link to="/login" className="text-white block hover:bg-indigo-500 px-3 py-2 rounded-md">
-                  Login
-                </Link>
-                <Link to="/signup" className="text-white block hover:bg-indigo-500 px-3 py-2 rounded-md">
-                  Sign Up
-                </Link>
-              </>
-            )}
-          </div>
-        </div>
-      )}
     </nav>
   );
-}
+};
+
+export default Navbar;

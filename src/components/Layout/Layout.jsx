@@ -1,11 +1,11 @@
 import { Outlet } from "react-router-dom";
-import Navbar from "../Navbar/Navbar.jsx"; // Add .jsx extension
+import Navbar from "../Navbar/Navbar.jsx";
 
 const Layout = () => {
     return (
-        <div className="min-h-screen bg-gray-100">
+        <div className="flex flex-col w-full">
             <Navbar />
-            <main className="container mx-auto px-4 py-8">
+            <main className="flex-1 w-full">
                 <Outlet />
             </main>
         </div>

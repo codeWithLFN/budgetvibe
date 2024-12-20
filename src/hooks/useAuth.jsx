@@ -1,6 +1,7 @@
 // src/context/AuthContext.js
 import { createContext, useContext, useState, useEffect } from 'react';
 import { account } from '../services/appwrite';
+import PropTypes from 'prop-types';
 
 const AuthContext = createContext({});
 
@@ -59,6 +60,12 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   );
 }
+
+
+
+AuthProvider.propTypes = {
+  children: PropTypes.node.isRequired,
+};
 
 export function useAuth() {
   return useContext(AuthContext);
