@@ -4,59 +4,58 @@ import { FiArrowRight, FiCheck, FiPieChart, FiTarget, FiTrendingUp, FiShield } f
 
 const HomePage = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 overflow-x-hidden">
       {/* Hero Section */}
-      <div className="relative overflow-hidden">
-        <div className="relative overflow-hidden px-4 sm:px-6 lg:px-8 pt-32 pb-16">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center"
-          >
-            <h1 className="text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600 pb-2">
-              Master Your Money with BudgetVibe
-            </h1>
-            <p className="text-2xl text-gray-300 mb-12 max-w-2xl mx-auto">
-              Experience the future of personal finance with AI-powered insights, 
-              real-time tracking, and intelligent recommendations.
-            </p>
-            <div className="flex justify-center gap-6">
-              <Link to="/signup" className="group relative inline-flex items-center px-8 py-4 bg-purple-600 hover:bg-purple-700 text-white rounded-full text-lg font-semibold transition-all duration-300 transform hover:scale-105">
-                Start Free Trial
-                <FiArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <Link to="/demo" className="inline-flex items-center px-8 py-4 bg-transparent border-2 border-purple-500 text-purple-400 hover:text-white hover:bg-purple-500 rounded-full text-lg font-semibold transition-all duration-300">
-                Watch Demo
-              </Link>
-            </div>
-          </motion.div>
-        </div>
+    <div className=" sm:px-6 lg:px-8 pt-32 pb-16">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="text-center"
+    >
+      <h1 className="text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600 pb-2">
+        Master Your Money with BudgetVibe
+      </h1>
+      <p className="text-2xl text-gray-300 mb-12 max-w-2xl mx-auto">
+        Experience the future of personal finance with AI-powered insights, 
+        real-time tracking, and intelligent recommendations.
+      </p>
+      <div className="flex justify-center gap-6">
+        <Link to="/signup" className="group relative inline-flex items-center px-8 py-4 bg-purple-600 hover:bg-purple-700 text-white rounded-full text-lg font-semibold transition-all duration-300 transform hover:scale-105">
+          Start Free Trial
+          <FiArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
+        </Link>
+        <Link to="/demo" className="inline-flex items-center px-8 py-4 bg-transparent border-2 border-purple-500 text-purple-400 hover:text-white hover:bg-purple-500 rounded-full text-lg font-semibold transition-all duration-300">
+          Watch Demo
+        </Link>
       </div>
+    </motion.div>
+  </div>
 
-      {/* Features Section */}
-      <div className="container mx-auto px-4 py-24">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-white mb-4">Why Choose BudgetVibe?</h2>
-          <p className="text-gray-400 text-xl">Powerful features to transform your financial journey</p>
-        </div>
+  {/* Features Section */}
+  <div className="container mx-auto px-4 py-24">
+    <div className="text-center mb-16">
+      <h2 className="text-4xl font-bold text-white mb-4">Why Choose BudgetVibe?</h2>
+      <p className="text-gray-400 text-xl">Powerful features to transform your financial journey</p>
+    </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          {features.map((feature, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.2 }}
-              className="group relative bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 opacity-0 group-hover:opacity-10 rounded-2xl transition-opacity" />
-              <feature.icon className="text-4xl text-purple-500 mb-6" />
-              <h3 className="text-2xl font-bold text-white mb-4">{feature.title}</h3>
-              <p className="text-gray-400 leading-relaxed">{feature.description}</p>
-            </motion.div>
-          ))}
-        </div>
-      </div>
+    <div className="grid md:grid-cols-3 gap-8">
+      {features.map((feature, index) => (
+        <motion.div
+          key={index}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ delay: index * 0.2 }}
+          className="group relative bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 opacity-0 group-hover:opacity-10 rounded-2xl transition-opacity" />
+          <feature.icon className="text-4xl text-purple-500 mb-6" />
+          <h3 className="text-2xl font-bold text-white mb-4">{feature.title}</h3>
+          <p className="text-gray-400 leading-relaxed">{feature.description}</p>
+        </motion.div>
+      ))}
+    </div>
+  </div>
+
 
       {/* AI Features Showcase */}
       <div className="bg-gray-900/50 py-20">

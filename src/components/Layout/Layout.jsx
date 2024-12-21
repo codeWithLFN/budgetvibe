@@ -3,9 +3,9 @@ import Navbar from "../Navbar/Navbar.jsx";
 
 const Layout = () => {
     return (
-        <div className="flex flex-col w-full">
+        <div className="flex flex-col h-screen">
             <Navbar />
-            <main className="flex-1 w-full">
+            <main className="flex-grow">	
                 <Outlet />
             </main>
         </div>
