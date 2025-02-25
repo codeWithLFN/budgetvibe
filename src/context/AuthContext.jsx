@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { account } from '../services/appwrite';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { loginUser, createUser as register, getCurrentUser, updateUserProfile } from '../services/auth';
 
 const AuthContext = createContext({});
 
@@ -10,28 +10,32 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
-    // Check if user is logged in
     useEffect(() => {
         checkUser();
     }, []);
 
-    // Verify current session
     const checkUser = async () => {
         try {
-            const session = await account.getSession('current');
-            setUser(session);
+            const token = localStorage.getItem('token');
+            if (token) {
+                const currentUser = await getCurrentUser(token);
+                setUser(currentUser);
+            } else {
+                setUser(null);
+            }
         } catch (error) {
+            console.error('Session check failed:', error);
             setUser(null);
         } finally {
             setLoading(false);
         }
     };
 
-    // Login function
     const login = async (email, password) => {
         try {
-            const session = await account.createEmailSession(email, password);
-            setUser(session);
+            const { user: userData } = await loginUser(email, password);
+            setUser(userData);
+            localStorage.setItem('token', userData.token);
             navigate('/dashboard');
             return { success: true };
         } catch (error) {
@@ -39,21 +43,21 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    // Register function
-    const register = async (email, password, name) => {
+    const signup = async (email, password, name) => {
         try {
-            await account.create('unique()', email, password, name);
-            await login(email, password);
+            const { user: userData } = await register(email, password, name);
+            setUser(userData);
+            localStorage.setItem('token', userData.token);
+            navigate('/dashboard');
             return { success: true };
         } catch (error) {
             return { success: false, error: error.message };
         }
     };
 
-    // Logout function
     const logout = async () => {
         try {
-            await account.deleteSession('current');
+            localStorage.removeItem('token');
             setUser(null);
             navigate('/');
             return { success: true };
@@ -62,40 +66,30 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    // Update user profile
     const updateProfile = async (userData) => {
         try {
-            const updatedUser = await account.updatePrefs(userData);
-            setUser(current => ({...current, prefs: updatedUser}));
+            const token = localStorage.getItem('token');
+            if (!token || !user?.id) {
+                throw new Error('Not authenticated');
+            }
+            const updatedUser = await updateUserProfile(user.id, userData);
+            setUser(current => ({...current, ...updatedUser}));
             return { success: true };
         } catch (error) {
             return { success: false, error: error.message };
         }
-    };
-
-    // Password reset
-    const resetPassword = async (email) => {
-        try {
-            await account.createRecovery(email, 'http://localhost:3000/reset-password');
-            return { success: true };
-        } catch (error) {
-            return { success: false, error: error.message };
-        }
-    };
-
-    const value = {
-        user,
-        loading,
-        login,
-        register,
-        logout,
-        updateProfile,
-        resetPassword
     };
 
     return (
-        <AuthContext.Provider value={value}>
-            {!loading && children}
+        <AuthContext.Provider value={{
+            user,
+            loading,
+            login,
+            logout,
+            signup,
+            updateProfile
+        }}>
+            {children}
         </AuthContext.Provider>
     );
 };
@@ -104,13 +98,8 @@ AuthProvider.propTypes = {
     children: PropTypes.node.isRequired,
 };
 
-// Custom hook for using auth context
 export const useAuth = () => {
-    const context = useContext(AuthContext);
-    if (!context) {
-        throw new Error('useAuth must be used within an AuthProvider');
-    }
-    return context;
+    return useContext(AuthContext);
 };
 
 export default AuthContext;
